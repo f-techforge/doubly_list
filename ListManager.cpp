@@ -1,70 +1,88 @@
 #include "include/ListManager.h"
-#include <string>
+#include "include/ListElem.h"
 #include <cstring>
 
 
-cListManager::cListManager(int num){
-        size_max = num;
-        for(int i=1; i<=size_max; i++){
-            cListElem* new_elem = new cListElem;
-            if(i==1){
-                first_data = new_elem;
-                end_data = new_elem;
-                now_data = new_elem;
-
-            }
-            else if(i==size_max){
-                old_data = now_data;
-                now_data = new_elem;
-
-                old_data->back_elem = now_data;
-                now_data->front_elem = old_data;
-
-                first_data->front_elem = now_data;
-                now_data->back_elem = first_data;
-
-            }
-            else{
-                old_data = now_data;
-                now_data = new_elem;
-
-                old_data->back_elem = now_data;
-                now_data->front_elem = old_data;
-
-
-            }
+CListManager::cListManager(int num=10){
+    size_max = num;
+    CListElem* new_elem = NULL;
+    for(int i=1; i<=size_max; i++){
+        new_elem = new CListElem;
+        if(i==1){
+            first_data = new_elem;
         }
-}
-
-cListManager::~cListManager(){
-    while(1){
-        if( first_data != end_data){
-            now_data = first_data->back_elem;
-            delete first_data;
-            first_data = now_data;
+        else if(i>=size_max){
+            first_data->front_elem = new_elem;
+            new_elem->back_elem = first_data;
+            first_data = new_elem;
         }
         else{
-            delete first_data;
-            break;
+            first_data->front_elem = new_elem;
+            new_elem->back_elem = first_data;
+            first_data = new_elem;
+
+            first_data->front_elem = end_data;
+            end_data->back_elem = first_data;
+            end_data = first_data;
         }
     }
 }
 
-
-
-bool cListManager::type_check(std::string data){
-    now_data = new cListElem;
-
-    if(1){
-        std::strcpy(now_data->list_data.data_char, data.c_str());
-        now_data->ch_add();
+CListManager::~cListManager(){
+    CListElem* del_ptr = NULL;
+    for(int i=1; i<=size_max; i++){
+        del_ptr = first_data;
+        if(i <= 10){
+            first_data = first_data->back_elem;
+        }
+        delete del_ptr;
     }
-    else if(1){
-
-    }
-
-    return true;
+    printf("ƒŠƒXƒg‚ğíœ‚µ‚Ü‚µ‚½\n");
 }
+
+char CListManager::command_input(void){
+    char* command = new char[capacity];
+    char ch = 0;
+    bool flag = false;
+    unsigned char length = 0;
+    std::cout << "ƒRƒ}ƒ“ƒh‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢\n->";
+    while((ch = getchar()) != EOF){
+        if(ch == '\n'){
+            flag = true;
+            break;
+        }
+        elseif((ch < 30) || ((39 < ch) && (ch < 41)) || ((5A < ch) && (ch < 61)) || (7A < ch)){
+            printf("ƒRƒ}ƒ“ƒh‚Ég—p‚Å‚«‚È‚¢•¶š‚ªŠÜ‚Ü‚ê‚Ä‚¢‚Ü‚·B\n");
+            flag = false;
+            break;
+        }
+        elseif(length+1 > capacity_max){
+            std::cout << "ƒRƒ}ƒ“ƒh‚Ì•¶š”‚ªÅ‘å’l‚ğ’´‰ß‚µ‚Ä‚¢‚Ü‚·B\n";
+            flag = false;
+            break;  
+        }
+        elseif(length+1 > capacity){
+            char* new_command = new char[capacity*2];
+            std::memcpy(new_command, command, capacity);
+            delete[] command;
+            command = new_command;
+            capacity *= 2;
+        }
+        else{
+            command[length] = ch;
+            length++;
+        }
+    };
+    if(flag == true){
+        command[length] = '\0';
+        return command;
+    }
+    else{
+        return "ERROR";
+    }
+}
+
+
 
 bool cListManager::add_elem(std::string type_data){
 
@@ -81,7 +99,7 @@ bool cListManager::add_elem(std::string type_data){
         now_data->front_elem  = old_data;
     } 
     else{
-        std::cout << "ã‚¨ãƒ©ãƒ¼" << std::endl;
+        std::cout << "ƒGƒ‰[" << std::endl;
         return false;
     }
 
@@ -91,25 +109,25 @@ bool cListManager::add_elem(std::string type_data){
 
 bool cListManager::push_fanction(void){
     if(size_count>=size_max){
-        std::cout << "ãƒªã‚¹ãƒˆã‚µã‚¤ã‚ºãŒæœ€å¤§ã§ã™ã€‚" << std::endl;
+        std::cout << "ƒŠƒXƒgƒTƒCƒY‚ªÅ‘å‚Å‚·B" << std::endl;
         return true;
     }
 
     bool retry_check = false;
     std::string data;
     for(char retry_num = 3; retry_num >= 0; retry_num--){
-        std::cout << "ãƒªã‚¹ãƒˆè¿½åŠ ã™ã‚‹ãƒ‡ãƒ¼ã‚¿ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„" << std::endl << "->";
+        std::cout << "ƒŠƒXƒg’Ç‰Á‚·‚éƒf[ƒ^‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢" << std::endl << "->";
         std::cin >> data;
 
         if(retry_num<=0){
-            std::cout << "ã‚³ãƒãƒ³ãƒ‰å…¥åŠ›ã‹ã‚‰ã‚„ã‚Šç›´ã—ã¦ãã ã•ã„\n"; 
+            std::cout << "ƒRƒ}ƒ“ƒh“ü—Í‚©‚ç‚â‚è’¼‚µ‚Ä‚­‚¾‚³‚¢\n"; 
             retry_check = true;
             break;
         }
 
         if((short)(data.length()) > 100){break;}
         else{
-            std::cout << "ãƒ‡ãƒ¼ã‚¿ã®æ–‡å­—æ•°ãŒ100ã‚’è¶…éã—ã¦ã„ã¾ã™ã€‚\nå…¥åŠ›ã—ç›´ã—ã¦ãã ã•ã„ã€‚\nå…¥åŠ›ãƒˆãƒ©ã‚¤å›æ•°æ®‹ã‚Š" << retry_num-1 << "å›\n->";
+            std::cout << "ƒf[ƒ^‚Ì•¶š”‚ª100‚ğ’´‰ß‚µ‚Ä‚¢‚Ü‚·B\n“ü—Í‚µ’¼‚µ‚Ä‚­‚¾‚³‚¢B\n“ü—Íƒgƒ‰ƒC‰ñ”c‚è" << retry_num-1 << "‰ñ\n->";
         }
     }
     if(retry_check){return false;}

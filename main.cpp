@@ -1,39 +1,40 @@
 #include "include/ListManager.h"
-#include <iostream>
+#include <cstring>
 
 int main(void){
 
-    std::string command;
+    char command* = NULL;
     cListManager* doubly_list = new cListManager;
     while (1)
     {   
-        std::cout << "繧ｳ繝槭Φ繝峨ｒ蜈･蜉帙＠縺ｦ縺上□縺輔＞\n->";
-        std::cin >> command;
+        printf("コマンドを入力してください\n->");
+        command = doubly_list->command_input();
 
-        if(command == "push"){
+        if(strcmp(command, "push 英数字") == 0){
             doubly_list->push_fanction();
         }
-        else if(command == "pop"){
+        else if(strcmp(command, "pop") == 0){
 
         }
-        else if((command == "print") || (command == "p")){
+        else if((strcmp(command, "print") == 0) || (strcmp(command, "p") == 0)){
 
         }
-        else if((command == "clear") || (command == "c")){
+        else if((strcmp(command, "clear") == 0) || (strcmp(command, "c") == 0)){
 
         }
-        else if((command == "help") || (command == "h")){
+        else if((strcmp(command, "help") == 0) || (strcmp(command, "h") == 0)){
 
         }
-        else if(command == "quit"){
+        else if(strcmp(command, "quit") == 0){
             delete doubly_list;
+            return 0;
+        }
+        else if(strcmp(command, "ERROR") == 0){
+            printf("コマンド入力からやり直してください\n");
         }
         else{
-            return -1; //
+            printf("コマンドが間違っています。再度");
         }
         
     }
-
-    
-    return 0;
 }
